@@ -10,21 +10,6 @@ RSpec.describe Enigma do
     expect(enigma).to be_an(Enigma)
   end
 
-  it 'has a key' do
-    enigma = Enigma.new
-    enigma.random_number_generator
-    allow(enigma).to receive(:key).and_return('02816')
-    expect(enigma.key.size).to eq(5)
-    expect(enigma.key).to eq('02816')
-  end
-
-  it 'has an offset' do
-    enigma = Enigma.new
-    allow(enigma).to receive(:offset).and_return('021121')
-    expect(enigma.offset).to eq('021121')
-
-  end
-
   it 'has an alphabet' do
     enigma = Enigma.new
     expected = ["a", "b", "c", "d", "e", "f", "g",
@@ -35,8 +20,36 @@ RSpec.describe Enigma do
     expect(enigma.alphabet).to eq(expected)
   end
 
-  xit 'encrypts' do
+  it 'has an offset' do
     enigma = Enigma.new
+    # enigma.todays_date
+    allow(enigma).to receive(:date).and_return('021121')
+    expect(enigma.date).to eq('021121')
+  end
+
+  it 'generates key' do
+    enigma = Enigma.new
+    expect(enigma.generate_key("02715")).to eq([02, 27, 71, 15])
+  end
+
+  it 'creates an offset' do
+    enigma = Enigma.new
+    expect(enigma.generate_offset("040895")).to eq([1, 0, 2, 5])
+  end
+
+  it 'adds the offset and keys' do
+    enigma = Enigma.new
+    # allow(enigma).to receive(:offset).and_return('021121')
+    # enigma.generate_offset("040895")
+    # enigma.generate_key("02715")
+    expect(enigma.addition("02715", "040895")).to eq([3, 27, 73, 20])
+    expect(enigma.date).to eq([1, 0, 2, 5])
+    expect(enigma.key).to eq([02, 27, 71, 15])
+  end
+
+  it 'encrypts' do
+    enigma = Enigma.new
+
     expected = {
       encryption: 'keder ohulw',
       key: '02715',
