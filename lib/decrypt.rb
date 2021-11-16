@@ -10,10 +10,10 @@ date = ARGV[3]
 decrypt_file = new_file.read
 new_file.close
 
-example = enigma.decrypt(decrypt_file.strip, key, date)
+decrypted_message = enigma.decrypt(decrypt_file.strip, key, date)
 
 writer = File.open(ARGV[1], "w")
-writer.write(example[:decryption])
+writer.write(decrypted_message[:decryption])
 writer.close
 
 p "Created 'decrypted.txt' with the key #{key}, and date #{date}"
