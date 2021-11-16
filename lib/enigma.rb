@@ -36,11 +36,9 @@ class Enigma
   end
 
   def encrypt(message, key = nil, date = nil)
-    if date == nil
-      date = Date.today.strftime('%d%m%y')
-    end
-    if key == nil
-      @random << 5.times.map {rand(0..9)}.join
+    date = Date.today.strftime('%d%m%y') if date.nil?
+    if key.nil?
+      @random << 5.times.map { rand(0..9) }.join
       key = @random.join
     end
 
@@ -50,7 +48,9 @@ class Enigma
 
     given_message = message.downcase.split('')
     given_message.each_with_index do |value, index|
-      if index % 4 == 0
+      if !@alphabet.include?(value) == true
+        all_encrypted << value
+      elsif index % 4 == 0
         a_shift = @alphabet.index(value) + all_keys[0]
         all_encrypted << @alphabet[a_shift % 27]
       elsif index % 4 == 1
@@ -71,15 +71,13 @@ class Enigma
   def decrypt(message, key = nil, date = nil)
     decryption_hash = {}
     all_decrypted = []
-
     all_keys = addition(key, date)
-    if date == nil
-      date = Date.today.strftime('%d%m%y')
-    end
 
     given_message = message.downcase.split('')
     given_message.each_with_index do |value, index|
-      if index % 4 == 0
+      if !@alphabet.include?(value) == true
+        all_decrypted << value
+      elsif index % 4 == 0
         a_shift = @alphabet.index(value) - all_keys[0]
         all_decrypted << @alphabet[a_shift % 27]
       elsif index % 4 == 1
