@@ -20,11 +20,18 @@ RSpec.describe Enigma do
     expect(enigma.alphabet).to eq(expected)
   end
 
+  it 'has a key' do
+    enigma = Enigma.new
+    allow(enigma).to receive(:keys).and_return(['02715'])
+    expect(enigma.keys).to eq(['02715'])
+    expect(enigma.keys[0].length).to eq(5)
+  end
+
   it 'has an offset' do
     enigma = Enigma.new
-    # enigma.todays_date
-    allow(enigma).to receive(:dates).and_return('021121')
-    expect(enigma.dates).to eq('021121')
+    allow(enigma).to receive(:dates).and_return(['021121'])
+    expect(enigma.dates).to eq(['021121'])
+    expect(enigma.dates[0].length).to eq(6)
   end
 
   it 'generates key' do
@@ -32,16 +39,13 @@ RSpec.describe Enigma do
     expect(enigma.generate_key('02715')).to eq([0o2, 27, 71, 15])
   end
 
-  it 'creates an offset' do
+  it 'generates offset' do
     enigma = Enigma.new
     expect(enigma.generate_offset('040895')).to eq([1, 0, 2, 5])
   end
 
   it 'adds the offset and keys' do
     enigma = Enigma.new
-    # allow(enigma).to receive(:offset).and_return('021121')
-    # enigma.generate_offset("040895")
-    # enigma.generate_key("02715")
     expect(enigma.addition('02715', '040895')).to eq([3, 27, 73, 20])
     expect(enigma.dates).to eq([1, 0, 2, 5])
     expect(enigma.keys).to eq([0o2, 27, 71, 15])
@@ -55,7 +59,21 @@ RSpec.describe Enigma do
       key: '02715',
       date: '040895'
     }
-    expect(enigma.encrypt('Hello world', '02715', '040895')).to eq(expected)
+    expect(enigma.encrypt('hello world', '02715', '040895')).to eq(expected)
+    expect(enigma.keys).to eq([2, 27, 71, 15])
+    expect(enigma.dates).to eq([1, 0, 2, 5])
+    expect(enigma.random).to eq([])
+  end
+
+  it 'encrypts with uppercase message' do
+    enigma = Enigma.new
+
+    expected = {
+      encryption: 'keder ohulw',
+      key: '02715',
+      date: '040895'
+    }
+    expect(enigma.encrypt('HELLO WORLD', '02715', '040895')).to eq(expected)
   end
 
   it 'decrypts' do
@@ -68,57 +86,25 @@ RSpec.describe Enigma do
     expect(enigma.decrypt('keder ohulw', '02715', '040895')).to eq(expected)
   end
 
-  it 'encrypts without offset' do
+  it 'encrypts with special key' do
     enigma = Enigma.new
 
     expected = {
-      encryption: 'pkfawfqdzry',
+      encryption: 'keder ohulw!',
       key: '02715',
-      date: '141121'
+      date: '040895'
     }
-    expect(enigma.encrypt('hello world', '02715', date = nil)).to eq(expected)
+    expect(enigma.encrypt('hello world!', '02715', '040895')).to eq(expected)
   end
 
-  it 'decrypts without offset' do
+  it 'decrypts with special key' do
     enigma = Enigma.new
 
     expected = {
-      decryption: 'hello world',
+      decryption: 'hello world!',
       key: '02715',
-      date: '141121'
+      date: '040895'
     }
-    expect(enigma.decrypt('pkfawfqdzry', '02715', '141121')).to eq(expected)
-  end
-
-  xit 'encrypts without key' do
-    enigma = Enigma.new
-
-    expected = {
-      encryption: 'jeb q mctlu',
-      key: '02715',
-      date: '141121'
-    }
-    expect(enigma.encrypt('hello world')).to eq(expected)
-  end
-  it 'decrypts without key' do
-    enigma = Enigma.new
-
-    expected = {
-      decryption: 'hello world',
-      key: '84907',
-      date: '141121'
-    }
-    expect(enigma.decrypt('qfytxaiw mq', '84907', '141121')).to eq(expected)
-  end
-
-  xit 'encrypts with message only' do
-    enigma = Enigma.new
-
-    expected = {
-      encryption: 'jeb q mctlu',
-      key: '02715',
-      date: '141121'
-    }
-    expect(enigma.encrypt('hello world')).to eq(expected)
+    expect(enigma.decrypt('keder ohulw!', '02715', '040895')).to eq(expected)
   end
 end
