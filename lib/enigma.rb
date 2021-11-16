@@ -36,6 +36,7 @@ class Enigma
   end
 
   def encrypt(message, key = nil, date = nil)
+
     date = Date.today.strftime('%d%m%y') if date.nil?
     if key.nil?
       @random << 5.times.map { rand(0..9) }.join
@@ -43,55 +44,55 @@ class Enigma
     end
 
     encryption_hash = {}
-    all_encrypted = []
+    encrypted_message = []
     all_keys = addition(key, date)
 
     given_message = message.downcase.split('')
     given_message.each_with_index do |value, index|
       if !@alphabet.include?(value) == true
-        all_encrypted << value
+        encrypted_message << value
       elsif index % 4 == 0
         a_shift = @alphabet.index(value) + all_keys[0]
-        all_encrypted << @alphabet[a_shift % 27]
+        encrypted_message << @alphabet[a_shift % 27]
       elsif index % 4 == 1
         b_shift = @alphabet.index(value) + all_keys[1]
-        all_encrypted << @alphabet[b_shift % 27]
+        encrypted_message << @alphabet[b_shift % 27]
       elsif index % 4 == 2
         c_shift = @alphabet.index(value) + all_keys[2]
-        all_encrypted << alphabet[c_shift % 27]
+        encrypted_message << @alphabet[c_shift % 27]
       elsif index % 4 == 3
         d_shift = @alphabet.index(value) + all_keys[3]
-        all_encrypted << alphabet[d_shift % 27]
+        encrypted_message << @alphabet[d_shift % 27]
       end
     end
-    encrypt = all_encrypted.join
+    encrypt = encrypted_message.join
     encryption_hash.merge!(encryption: encrypt, key: key, date: date)
   end
 
   def decrypt(message, key = nil, date = nil)
     decryption_hash = {}
-    all_decrypted = []
+    decrypted_message = []
     all_keys = addition(key, date)
 
     given_message = message.downcase.split('')
     given_message.each_with_index do |value, index|
       if !@alphabet.include?(value) == true
-        all_decrypted << value
+        decrypted_message << value
       elsif index % 4 == 0
         a_shift = @alphabet.index(value) - all_keys[0]
-        all_decrypted << @alphabet[a_shift % 27]
+        decrypted_message << @alphabet[a_shift % 27]
       elsif index % 4 == 1
         b_shift = @alphabet.index(value) - all_keys[1]
-        all_decrypted << @alphabet[b_shift % 27]
+        decrypted_message << @alphabet[b_shift % 27]
       elsif index % 4 == 2
         c_shift = @alphabet.index(value) - all_keys[2]
-        all_decrypted << @alphabet[c_shift % 27]
+        decrypted_message << @alphabet[c_shift % 27]
       elsif index % 4 == 3
         d_shift = @alphabet.index(value) - all_keys[3]
-        all_decrypted << @alphabet[d_shift % 27]
+        decrypted_message << @alphabet[d_shift % 27]
       end
     end
-    decrypt = all_decrypted.join
+    decrypt = decrypted_message.join
     decryption_hash.merge!(decryption: decrypt, key: key, date: date)
   end
 end
