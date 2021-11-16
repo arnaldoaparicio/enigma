@@ -8,10 +8,6 @@ class Enigma
     @random = []
   end
 
-  # def todays_date
-  #   @offset = Date.today.strftime('%d%m%y')
-  # end
-
   def generate_key(key)
     list = []
     a = key[0..1]
@@ -40,8 +36,6 @@ class Enigma
   end
 
   def encrypt(message, key = nil, date = nil)
-
-
     if date == nil
       date = Date.today.strftime('%d%m%y')
     end
@@ -53,7 +47,6 @@ class Enigma
     encryption_hash = {}
     all_encrypted = []
     all_keys = addition(key, date)
-
 
     given_message = message.downcase.split('')
     given_message.each_with_index do |value, index|
@@ -79,21 +72,16 @@ class Enigma
     decryption_hash = {}
     all_decrypted = []
 
-
     all_keys = addition(key, date)
     if date == nil
       date = Date.today.strftime('%d%m%y')
     end
-    # if key == nil
-    #   @random.join
-    # end
 
     given_message = message.downcase.split('')
     given_message.each_with_index do |value, index|
       if index % 4 == 0
         a_shift = @alphabet.index(value) - all_keys[0]
         all_decrypted << @alphabet[a_shift % 27]
-        
       elsif index % 4 == 1
         b_shift = @alphabet.index(value) - all_keys[1]
         all_decrypted << @alphabet[b_shift % 27]
